@@ -39,8 +39,10 @@ export default class UsersController {
                 'error': `User with id #${id} not found.`
             })
         }
+        const addresses = await connection('addresses')
+            .where({userId: id})
 
-        return response.json(user)
+        return response.json({...user, addresses})
     }
 
     async list(request: Request, response: Response) {
