@@ -88,5 +88,4 @@ export default class AddressController {
 
         return response.json({ ...address, ...request.body })
     }
-    
 }

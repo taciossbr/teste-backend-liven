@@ -68,6 +68,10 @@ export default class UsersController {
             .where({ id })
             .del()
 
+        await connection('addresses')
+            .where({ userId: id })
+            .del()
+
         return response.status(204).send()
     }
 
