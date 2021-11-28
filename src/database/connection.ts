@@ -2,7 +2,8 @@ import knex from "knex";
 
 import knexSettings from "../../knexfile"
 
-const config = knexSettings.development
+// @ts-ignore
+const config = knexSettings[process.env.NODE_ENV || 'development'] 
 
 const connection = knex(config)
 
