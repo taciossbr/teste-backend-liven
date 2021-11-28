@@ -54,7 +54,7 @@ export default class AddressController {
     
     async list(request: Request, response: Response) {
         const userId = parseInt(request.params.userId)
-        const { country } = request.query
+        const { country, state, city, neighbourhood, street, zipCode } = request.query
 
         const loggedUser = await getLoggedUser(request)
         console.log(loggedUser, userId)
@@ -65,11 +65,26 @@ export default class AddressController {
             })
         }
 
-        let addressesQuery = connection('addresses')
+        const addressesQuery = connection('addresses')
             .where({userId: userId.toString()})
 
         if (country) {
-            addressesQuery = addressesQuery.where({country})
+            addressesQuery.where("country", "ilike", `%${country}%`)
+        }
+        if (state) {
+            addressesQuery.where("state", "ilike", `%${state}%`)
+        }
+        if (city) {
+            addressesQuery.where("city", "ilike", `%${city}%`)
+        }
+        if (neighbourhood) {
+            addressesQuery.where("neighbourhood", "ilike", `%${neighbourhood}%`)
+        }
+        if (street) {
+            addressesQuery.where("street", "ilike", `%${street}%`)
+        }
+        if (zipCode) {
+            addressesQuery.where("zipCode", "ilike", `%${zipCode}%`)
         }
 
         const addresses = await addressesQuery
