@@ -22,11 +22,10 @@ export default class AddressController {
             street, zipCode, houseNumber, complement, userId
         }).returning('id')
 
-        return response.json({
-            country, state, city, neighbourhood,
-            street, zipCode, houseNumber, complement,
-            id, userId
-        })
+        const address = await connection('addresses')
+            .where({id}).first()
+
+        return response.json(address)
     }
 
 
@@ -130,7 +129,10 @@ export default class AddressController {
         await connection('addresses')
             .where({ id })
             .update(request.body)
+        
+        const addressUpdated = await connection('addresses')
+            .where({id}).first()
 
-        return response.json({ ...address, ...request.body })
+        return response.json(addressUpdated)
     }
 }

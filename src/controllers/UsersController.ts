@@ -24,9 +24,12 @@ export default class UsersController {
             username, name, email, password,
         }).returning('id')
 
-        return response.status(201).json({
-            id, username, name, email
-        })
+        const userCreated = await connection('users')
+            .select(['users.id', 'users.name', 'users.username', 'users.email'])
+            .where({id})
+            .first()
+
+        return response.status(201).json(userCreated)
     }
 
     async show(request: Request, response: Response) {
@@ -90,7 +93,12 @@ export default class UsersController {
         await connection('users')
             .where({ id })
             .update(request.body)
+        
+        const userUpdated = await connection('users')
+            .select(['users.id', 'users.name', 'users.username', 'users.email'])
+            .where({id})
+            .first()
 
-        return response.json({ ...loggedUser, ...request.body })
+        return response.json({ userUpdated })
     }
 }
