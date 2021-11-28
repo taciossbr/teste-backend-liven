@@ -8,7 +8,6 @@ Solução de teste técnico para Backend da Liven, a ideia do projeto e uma API 
 
 Antes de começar, verifique se você atendeu aos seguintes requisitos:
 * Você instalou a versão mais recente do Docker
-* 
 
 ## 🚀 Executando
 
