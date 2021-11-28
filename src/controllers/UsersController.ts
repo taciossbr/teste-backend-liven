@@ -48,14 +48,6 @@ export default class UsersController {
         return response.json({...loggedUser, addresses})
     }
 
-    async list(request: Request, response: Response) {
-
-        const users = await connection('users')
-            .select(['users.id', 'users.name', 'users.username', 'users.email'])
-
-        return response.json(users)
-    }
-
     async delete(request: Request, response: Response) {
         const id = parseInt(request.params.id)
 

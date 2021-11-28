@@ -13,7 +13,6 @@ const credentialsController = new CredentialsController()
 const addressesController = new AddressController()
 
 server.post('/users', usersController.create)
-server.get('/users', loginRequired, usersController.list)
 server.get('/users/:id', loginRequired, usersController.show)
 server.put('/users/:id', loginRequired, usersController.update)
 server.delete('/users/:id', loginRequired, usersController.delete)
