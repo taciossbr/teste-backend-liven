@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken'
 import connection from "../database/connection";
 import bcrypt from "bcrypt"
 import settings from "../../settings"
+import { getLoggedUser } from "../lib/auth";
 
 
 export default class CredentialsController {
@@ -29,26 +30,25 @@ export default class CredentialsController {
     }
 
     async update(request: Request, response: Response) {
-        const { id } = request.params
+        const id = parseInt(request.params.id)
         const {currentPassword, newPassword} = request.body
 
-        const user = await connection('users')
-            .where({ id }).first()
+        const loggedUser = await getLoggedUser(request, {includePassword: true})
 
-        if (!user) {
+        if (!loggedUser || loggedUser.id !== id) {
             return response.status(404).json({
                 'error': `User with id #${id} not found.`
             })
         }
-        console.log(currentPassword, user)
-        if (bcrypt.compareSync(currentPassword, user.password)) {
+
+        if (bcrypt.compareSync(currentPassword, loggedUser.password)) {
             const password = bcrypt.hashSync(newPassword, 10);
 
             await connection('users')
                 .where({ id })
                 .update({password})
-            delete user.password
-            return response.json({ user })
+            delete loggedUser.password
+            return response.json({ user: loggedUser })
         }
         return response.status(401).json({
             'error': 'Wrong password'

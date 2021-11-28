@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import connection from "../database/connection";
 import bcrypt from "bcrypt"
+import { getLoggedUser } from "../lib/auth";
 
 
 export default class UsersController {
@@ -29,12 +30,11 @@ export default class UsersController {
     }
 
     async show(request: Request, response: Response) {
-        const { id } = request.params
+        const id = parseInt(request.params.id)
 
-        const user = await connection('users')
-            .select(['users.id', 'users.name', 'users.username', 'users.email'])
-            .where({ id }).first()
-        if (!user) {
+        const loggedUser = await getLoggedUser(request)
+
+        if (!loggedUser || loggedUser.id !== id) {
             return response.status(404).json({
                 'error': `User with id #${id} not found.`
             })
@@ -42,7 +42,7 @@ export default class UsersController {
         const addresses = await connection('addresses')
             .where({userId: id})
 
-        return response.json({...user, addresses})
+        return response.json({...loggedUser, addresses})
     }
 
     async list(request: Request, response: Response) {
@@ -54,11 +54,11 @@ export default class UsersController {
     }
 
     async delete(request: Request, response: Response) {
-        const { id } = request.params
+        const id = parseInt(request.params.id)
 
-        const user = await connection('users')
-            .where({ id }).first()
-        if (!user) {
+        const loggedUser = await getLoggedUser(request)
+
+        if (!loggedUser || loggedUser.id !== id) {
             return response.status(404).json({
                 'error': `User with id #${id} not found.`
             })
@@ -77,13 +77,11 @@ export default class UsersController {
 
 
     async update(request: Request, response: Response) {
-        const { id } = request.params
+        const id = parseInt(request.params.id)
 
-        const user = await connection('users')
-            .select(['users.id', 'users.name', 'users.username', 'users.email'])
-            .where({ id }).first()
+        const loggedUser = await getLoggedUser(request)
 
-        if (!user) {
+        if (!loggedUser || loggedUser.id !== id) {
             return response.status(404).json({
                 'error': `User with id #${id} not found.`
             })
@@ -93,6 +91,6 @@ export default class UsersController {
             .where({ id })
             .update(request.body)
 
-        return response.json({ ...user, ...request.body })
+        return response.json({ ...loggedUser, ...request.body })
     }
 }
