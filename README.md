@@ -16,7 +16,7 @@ Para executar o projeto, siga estas etapas:
 ```bash
 cp docker-compose.development.yml docker-compose.override.yml
 
-docker-compose up # Depois que os conteiners iciarem encerre o processo
+docker-compose up # Depois que os containers iniciarem encerre o processo
 docker-compose run app npx knex migrate:latest
 
 docker-compose up
