@@ -1,4 +1,4 @@
-import { celebrate, Joi, errors, Segments } from 'celebrate'
+import { celebrate, Joi, Segments } from 'celebrate'
 
 export const create = celebrate({
     [Segments.BODY]: Joi.object().keys({
@@ -9,7 +9,22 @@ export const create = celebrate({
     })
 })
 
+export const show = celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().integer().required(),
+    }),
+})
+
+export const remove = celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().integer().required(),
+    }),
+})
+
 export const update = celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().integer().required(),
+    }),
     [Segments.BODY]: Joi.object().keys({
         name: Joi.string().required(),
         email: Joi.string().email().required()
